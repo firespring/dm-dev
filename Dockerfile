@@ -27,18 +27,16 @@ WORKDIR /home/${USERNAME}/datamapper/dm-dev
 COPY . .
 
 # Setup dm environment for ruby 2.6
-RUN source /home/${USERNAME}/.rvm/scripts/rvm && rvm install 2.6 && gem update --system 3.2.3 && gem install bundler -v 2.4.22
-# RUN BUNDLE_GEMFILE=Gemfile.2.6.6 bundle install
+# RUN source /home/${USERNAME}/.rvm/scripts/rvm && rvm install 2.6 && gem update --system 3.2.3 && gem install bundler -v 2.4.22
+RUN rvm install 2.6 && gem update --system 3.2.3 && gem install bundler -v 2.4.22
+RUN BUNDLE_GEMFILE=Gemfile.2.6.6 bundle install
 
 # Setup dm environment for ruby 2.7
 RUN rvm install 2.7.8
-# RUN rvm use 2.7.8 && BUNDLE_GEMFILE=Gemfile.2.7.8 bundle install
+RUN rvm use 2.7.8 && BUNDLE_GEMFILE=Gemfile.2.7.8 bundle install
 
 # Setup dm environment for ruby 3.2
 RUN rvm install 3.2.2
-# RUN rvm use 3.2.2 && BUNDLE_GEMFILE=Gemfile.3.2.2 bundle install
-
-# Setup the thor tasks
-#RUN thor install dm-dev/tasks.rb
+RUN rvm use 3.2.2 && BUNDLE_GEMFILE=Gemfile.3.2.2 bundle install
 
 CMD ["bash", "-l", "-c", "while [ true ]; do sleep 300; done"]
