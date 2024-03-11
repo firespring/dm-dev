@@ -1279,32 +1279,34 @@ module DataMapper
         end
       end
 
-      private def implode_confirmed?
-        return true if options[:pretend]
+      no_commands do
+        private def implode_confirmed?
+          return true if options[:pretend]
 
-        question = "Are you really sure? This will destroy #{affected_repositories}! (yes)"
-        ask(question) == 'yes'
-      end
-
-      private def affected_repositories
-        included = options[:include]
-        if include_all?(included)
-          'not only all repositories, but also everything below DM_DEV_BUNDLE_ROOT!'
-        else
-          "the following repositories: #{included.join(', ')}!"
+          question = "Are you really sure? This will destroy #{affected_repositories}! (yes)"
+          ask(question) == 'yes'
         end
-      end
 
-      private def include_all?(included)
-        include_all_implicitly?(included) || include_all_explicitly?(included)
-      end
+        private def affected_repositories
+          included = options[:include]
+          if include_all?(included)
+            'not only all repositories, but also everything below DM_DEV_BUNDLE_ROOT!'
+          else
+            "the following repositories: #{included.join(', ')}!"
+          end
+        end
 
-      private def include_all_implicitly?(included)
-        included.nil?
-      end
+        private def include_all?(included)
+          include_all_implicitly?(included) || include_all_explicitly?(included)
+        end
 
-      private def include_all_explicitly?(included)
-        included.respond_to?(:each) && included.count == 1 && included.first == 'all'
+        private def include_all_implicitly?(included)
+          included.nil?
+        end
+
+        private def include_all_explicitly?(included)
+          included.respond_to?(:each) && included.count == 1 && included.first == 'all'
+        end
       end
     end
   end
