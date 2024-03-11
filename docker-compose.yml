@@ -5,7 +5,7 @@ services:
     image: dm-dev:latest
     build:
       args:
-        USER: "${USER}"
+        USERNAME: ${USER}
       context: .
       dockerfile: Dockerfile
     environment:
