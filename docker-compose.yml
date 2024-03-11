@@ -1,0 +1,38 @@
+---
+version: '3.7'
+services:
+  app:
+    image: dm-dev:latest
+    build:
+      args:
+        USER: "${USER}"
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      HISTFILE: var/www/.history/bash
+      DM_DEV_ROOT: "/home/${USER}/datamapper"           # Points to where the DM sources will be installed and used
+      DM_DEV_RUBIES: "2.6.6 2.7.8 3.2.2"                # The rvm ruby interpreters to use
+      DM_DEV_INCLUDE: "dm-core dm-validations"          # Makes sure that only these gems are used. When left out, all gems will be used
+      DM_DEV_EXCLUDE: "dm-tags dm-ar-finders"           # Makes sure that these gems are not used
+      ADAPTERS: "mysql"                                 # Use only these DM adapters
+      DM_DEV_GEMSET: datamapper                         # With dm:gem:install, install all gems into the "datamapper" gemset
+      VERBOSE: true                                     # Print out every shell command before executing it
+      BENCHMARK: true                                   # Print the time the command took to execute
+    volumes:
+      - ../dotfiles/.history:/var/www/.history:delegated
+      - .:/home/$USER/datamapper/dm-dev:delegated
+      - "../dm-types:/home/$USER/datamapper/dm-types:delegated"
+      - "../data_mapper:/home/$USER/datamapper/data_mapper:delegated"
+      - "../dm-aggregates:/home/$USER/datamapper/dm-aggregates:delegated"
+      - "../dm-core:/home/$USER/datamapper/dm-core:delegated"
+      - "../dm-do-adapter:/home/$USER/datamapper/dm-do-adapter:delegated"
+      - "../dm-noisy-failures:/home/$USER/datamapper/dm-noisy-failures:delegated"
+      - "../dm-transactions:/home/$USER/datamapper/dm-transactions:delegated"
+      - "../datamapper-do:/home/$USER/datamapper/datamapper-do:delegated"
+      - "../dm-constraints:/home/$USER/datamapper/dm-constraints:delegated"
+      - "../dm-migrations:/home/$USER/datamapper/dm-migrations:delegated"
+      - "../dm-serializer:/home/$USER/datamapper/dm_serializer:delegated"
+    networks:
+      default:
+        aliases:
+          - dm.sbf.engineering
