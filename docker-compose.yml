@@ -6,7 +6,7 @@ services:
     build:
       args:
         USERNAME: ${USER}
-        DM_DEV_INCLUDE: "data_mapper dm-aggregates dm-core dm-do-adapter dm-noisy-failures dm-types dm-transactions datamapper-do dm-constraints dm-migrations dm-serializer"
+        DM_DEV_INCLUDE: "data_mapper dm-aggregates dm-core dm-do-adapter dm-noisy-failures dm-types dm-transactions do dm-constraints dm-migrations dm-serializer"
       context: .
       dockerfile: Dockerfile
     environment:
@@ -14,7 +14,7 @@ services:
       HISTFILE: var/www/.history/bash
       DM_DEV_ROOT: "/home/${USER}/datamapper"           # Points to where the DM sources will be installed and used
       DM_DEV_RUBIES: "2.6.6 2.7.8 3.2.2"                # The rvm ruby interpreters to use
-      DM_DEV_INCLUDE: "data_mapper dm-aggregates dm-core dm-do-adapter dm-noisy-failures dm-types dm-transactions datamapper-do dm-constraints dm-migrations dm-serializer" # Makes sure that only these gems are used. When left out, all gems will be used
+      DM_DEV_INCLUDE: "data_mapper dm-aggregates dm-core dm-do-adapter dm-noisy-failures dm-types dm-transactions do dm-constraints dm-migrations dm-serializer" # Makes sure that only these gems are used. When left out, all gems will be used
       DM_DEV_EXCLUDE: "dm-tags dm-ar-finders"           # Makes sure that these gems are not used
       ADAPTERS: "mysql"                                 # Use only these DM adapters
       DM_DEV_GEMSET: datamapper                         # With dm:gem:install, install all gems into the "datamapper" gemset
