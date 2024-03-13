@@ -23,7 +23,7 @@ class ::Project
   end
 
   def self.command_class_name(name)
-    command_fragments(name).map { |fragment| fragment.capitalize }.join('::')
+    command_fragments(name).map(&:capitalize).join('::')
   end
 
   def self.command_fragments(name)
@@ -107,7 +107,7 @@ class ::Project
     minutes = ((time / 60) - (hours * 60)).to_i
     seconds = (time - ((minutes * 60) + (hours * 3600)))
 
-    "%02d:%02d:%02d" % [hours, minutes, seconds]
+    format('%02d:%02d:%02d', hours, minutes, seconds)
   end
 
   class Metadata
@@ -525,7 +525,7 @@ class ::Project
           start_time = Time.now
           shell(command) unless skip?
           duration = (Time.now - start_time).to_i
-          @results << {status:, output:, duration:}
+          @results << {status: status, output: output, duration: duration}
         end
         after
       elsif verbose? && !pretend?
@@ -541,7 +541,7 @@ class ::Project
       if skip?
         :skipped
       else
-        $? && $?.success? ? :pass : :fail
+        $CHILD_STATUS&.success? ? :pass : :fail
       end
     end
 
@@ -626,7 +626,7 @@ class ::Project
 
     def shell(command)
       if collect_output?
-        @output = %x[#{command}]
+        @output = `#{command}`
       else
         system(command)
       end
@@ -686,7 +686,7 @@ class ::Project
         end
 
         def revision
-          %x[git rev-parse HEAD].chomp!
+          `git rev-parse HEAD`.chomp!
         end
 
         def skip?
@@ -844,9 +844,7 @@ class ::Project
 
             execute
 
-            if print_matrix?
-              print ' %s |' % [ status ]
-            end
+            print format(' %s |', status) if print_matrix?
 
           end
         end
@@ -881,7 +879,7 @@ class ::Project
       end
 
       def clean?
-        %x[git status] =~ /working directory clean/
+        `git status` =~ /working directory clean/
       end
     end
 
@@ -1220,9 +1218,7 @@ module DataMapper
 
             execute
 
-            if print_matrix?
-              print ' %s |' % [ status ]
-            end
+            print format(' %s |', status) if print_matrix?
           end
           puts if print_matrix?
         end
