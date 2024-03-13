@@ -4,11 +4,27 @@ ARG USERNAME
 
 WORKDIR /usr/src
 
+ARG TARGETARCH=amd64
+
 RUN apt-get update \
-    && apt-get install -y build-essential curl default-libmysqlclient-dev vim gpg \
-   gawk autoconf automake bison libgdbm-dev libncurses5-dev libsqlite3-dev libtool \
-   pkg-config sqlite3 libreadline-dev libssl-dev iputils-ping libxml2-dev \
+    && DEPLIBS='zip unzip build-essential curl default-libmysqlclient-dev vim gpg gawk autoconf automake bison libgdbm-dev libncurses5-dev libsqlite3-dev libtool pkg-config sqlite3 libreadline-dev libssl-dev iputils-ping libxml2-dev jq git' \
+    && apt-get install -y $DEPLIBS && mkdir -p /tmp/awscli/ && cd /tmp/awscli/ \
+    && if [ -z "${TARGETARCH##*arm*}" ] ; then \
+         curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"; \
+       else \
+         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";  \
+       fi \
+    && unzip awscliv2.zip \
+    && ./aws/install -i /usr/local/aws-cli -b /usr/local/bin \
+    && rm -rf /tmp/awscli/ \
     && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
+
+# install latest awscli and clean up
+RUN apt-get update \
+    && apt-get install -y python3-pip \
+    && pip3 install --upgrade --no-cache-dir aws-encryption-sdk-cli==3.1.0 \
     && apt-get clean \
     && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 

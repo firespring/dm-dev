@@ -10,6 +10,8 @@ require 'ruby-github'
 require 'json'
 require 'rest_client'
 
+require 'aws-sdk-ssm'
+
 class ::Project
   def self.command_names
     %w(sync bundle:install bundle:update bundle:show bundle:force gem:install gem:uninstall spec release implode status list ci)
