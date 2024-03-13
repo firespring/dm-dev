@@ -6,10 +6,11 @@ require 'pathname'
 
 require 'thor'
 require 'addressable/uri'
-require 'ruby-github'
 require 'json'
 require 'rest_client'
 
+require 'octokit'
+require 'io/console'
 require 'aws-sdk-ssm'
 
 class ::Project
@@ -133,7 +134,7 @@ class ::Project
 
       def save(repositories)
         File.write(filename, YAML.dump({
-                                         'repositories' => repositories.map { |repo| {'name' => repo['name'], 'url' => repo['url']} }
+                                         'repositories' => repositories.map { |repo| {'name' => repo.name, 'url' => repo.url} }
                                        }))
         repositories
       end
@@ -147,7 +148,9 @@ class ::Project
         end
 
         def load
-          save(GitHub::API.user(username).repositories)
+          gh = GitHub.new
+          dm_repos = gh.client.repositories.select {|r| r.full_name.include?('datamapper') || r.full_name.include?('dm-')}
+          save(dm_repos)
         end
       end
 
@@ -184,7 +187,7 @@ class ::Project
     end
 
     def include?(url)
-      repositories.map { |repo| repo.url}.include?(url)
+      repositories.map(&:url).include?(url)
     end
   end
 
@@ -210,18 +213,105 @@ class ::Project
     end
   end
 
+  class GitHub
+    SBF_REPO = 'firespring/sbf'.freeze
+    NETRC_NAME = 'api.github.com'.freeze
+    AUTHORIZATION_NAME = 'Dev server token'.freeze
+    SCOPES = ['repo'].freeze
+
+    attr_reader :client
+
+    def initialize
+      @client = login
+    end
+
+    def login
+      authorize_credentials_from_aws
+
+    rescue Octokit::Unauthorized => ua
+      puts "Local auth is invalid (#{ua.message}). Re-authorizing with username/password"
+      authorize_oauth
+      retry
+    end
+
+    def authorize_credentials_from_aws
+      # Try to load our profile from netrc
+      github_oauth_token = Aws::SSM::Client.new.get_parameter(name: "/local/#{ENV['USER']}/github/oauth_token", with_decryption:true)&.parameter&.value
+      client = Octokit::Client.new(access_token: github_oauth_token)
+
+      # This will raise 'Octokit::Unauthorized' if we are not authorized
+      client.user
+
+      client
+    end
+
+    def authenticated?
+      client.user
+      true
+    rescue Octokit::Unauthorized
+      false
+    end
+
+    def authorize_oauth
+      puts "\nPlease enter your github credentials"
+      username = request_input("  username: ")
+      password = request_input("  password: ", hidden: true)
+      mfa_token = request_input("  2FA token: ")
+      client = Octokit::Client.new(login: username, password: password)
+
+      # See if we have already authorized a token. If we do, we will need to delete it
+      auth = client.authorizations(headers: {'X-GitHub-OTP' => mfa_token}).find { |auth| auth[:app][:name] == AUTHORIZATION_NAME }
+      client.delete_authorization(auth[:id], headers: {'X-GitHub-OTP' => mfa_token}) if auth
+
+      # Otherwise create the new authorization
+      oauth_token = client.create_authorization(scopes: SCOPES, note: AUTHORIZATION_NAME, headers: {'X-GitHub-OTP' => mfa_token})
+
+      # Store the new oauth information in AWS
+      personal_key_id = Aws::SSM::Client.new.get_parameter(name: "/local/#{ENV['USER']}/kms/id", with_decryption:true)&.parameter&.value
+      Aws::SSM::Client.new.put_parameter(
+        name: "/local/#{ENV['USER']}/github/oauth_token",
+        value: oauth_token[:token],
+        type: 'SecureString',
+        key_id: personal_key_id,
+        overwrite: true
+      )
+
+    rescue Octokit::Unauthorized => ua
+      puts "Login information was incorrect: #{ua.message}"
+      retry
+    end
+
+    def request_input(message, hidden: false)
+      print message
+      if hidden
+        answer = STDIN.noecho(&:gets).chomp
+        puts
+      else
+        answer = STDIN.gets.chomp
+      end
+      answer
+    end
+
+    def to_s
+      '#<Github Client>'
+    end
+
+    def inspect
+      '#<Github Client>'
+    end
+
+  end
+
   class Repositories
     include Enumerable
 
     def initialize(root, user, repos, excluded_repos)
       @root = root
       @user = user
-      @repos          = repos
+      @repos = repos
       @excluded_repos = excluded_repos
-      @metadata       = Metadata.new(@root, @user)
-      @repositories   = selected_repositories.map do |repo|
-        Repository.new(@root, repo)
-      end
+      @metadata = Metadata.new(@root, @user)
+      @repositories = selected_repositories.map {|repo| Repository.new(@root, repo) }
     end
 
     def each
@@ -388,7 +478,7 @@ class ::Project
     end
 
     def format(repo, action, command, msg)
-      [ @padding, @progress, @total, action, repo.name, msg, @verbose ? ": #{command}" : '' ]
+      [@padding, @progress, @total, action, repo.name, msg, @verbose ? ": #{command}" : ''].to_s
     end
   end
 
