@@ -1191,7 +1191,7 @@ module DataMapper
         include DataMapper::Project::Bundle::Manipulation, DataMapper::Project::Bundle
 
         def options
-          '--without quality'
+          ''
         end
       end
 
