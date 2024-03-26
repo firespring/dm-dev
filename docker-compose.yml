@@ -20,6 +20,10 @@ services:
       DM_DEV_GEMSET: datamapper                         # With dm:gem:install, install all gems into the "datamapper" gemset
       VERBOSE: true                                     # Print out every shell command before executing it
       BENCHMARK: true                                   # Print the time the command took to execute
+      DO_MYSQL_USER: test
+      DO_MYSQL_PASS: test123
+      DO_MYSQL_HOST: mysql
+      DO_MYSQL_DATABASE: /test
     volumes:
       - ~/.ssh:/home/${USER}/.ssh
       - ../dotfiles/.history:/var/www/.history:delegated
@@ -42,3 +46,16 @@ services:
       default:
         aliases:
           - dm.sbf.engineering
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      HISTFILE: var/www/.history/bash
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test123
+
+volumes:
+  mysql-data:
