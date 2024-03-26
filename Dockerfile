@@ -30,6 +30,7 @@ RUN apt-get update \
     && rm -rf /tmp/* /var/tmp/* /var/lib/apt/lists/*
 
 COPY --from=docker:dind /usr/local/bin /usr/local/bin
+# COPY --from=docker:dind /usr/libexec/docker/cli-plugins /usr/libexec/docker/cli-plugins
 
 SHELL ["/bin/bash", "-l", "-c"]
 RUN groupadd rvm
@@ -47,9 +48,6 @@ RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A170311380
 ## copy in the dm-dev repo
 WORKDIR /home/${USERNAME}/datamapper/dm-dev
 COPY . .
-
-# Setup dm environment for ruby 2.6
-# RUN source /home/${USERNAME}/.rvm/scripts/rvm && rvm install 2.6 && gem update --system 3.2.3 && gem install bundler -v 2.4.22
 
 # Setup dm environment for ruby 2.7
 RUN rvm install 2.7.8
