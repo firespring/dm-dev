@@ -2,7 +2,6 @@ FROM ruby:2.7.8-slim-bullseye
 MAINTAINER Firespring "info.dev@firespring.com"
 ARG USERNAME
 ARG DM_DEV_INCLUDE
-ENV DM_DEV_INCLUDE $DM_DEV_INCLUDE
 
 WORKDIR /usr/src
 
@@ -34,12 +33,13 @@ COPY --from=docker:dind /usr/local/bin /usr/local/bin
 
 SHELL ["/bin/bash", "-l", "-c"]
 RUN groupadd rvm
-RUN useradd --create-home --shell /bin/bash --no-log-init -G rvm,sudo "${USERNAME}"
+RUN useradd --create-home --shell /bin/bash --no-log-init -G rvm "${USERNAME}"
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-RUN for i in ${DM_DEV_INCLUDE}; do git config --global --add safe.directory "/home/${USERNAME}/datamapper/${i}"; done
+RUN git config --global --add safe.directory "/home/${USERNAME}/datamapper/dm-dev" \
+    && for i in ${DM_DEV_INCLUDE}; do git config --global --add safe.directory "/home/${USERNAME}/datamapper/${i}"; done
 
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
     && \curl -sSL https://get.rvm.io | bash -s stable
@@ -60,5 +60,7 @@ RUN rvm use 2.7.8 && BUNDLE_GEMFILE=Gemfile.2.7.8 bundle install
 # Setup dm environment for ruby 3.2
 RUN rvm install 3.2.2
 RUN rvm use 3.2.2 && BUNDLE_GEMFILE=Gemfile.3.2.2 bundle install
+
+WORKDIR /home/${USERNAME}/datamapper
 
 CMD ["bash", "-l", "-c", "while [ true ]; do sleep 300; done"]
