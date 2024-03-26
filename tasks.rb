@@ -422,7 +422,7 @@ class ::Project
     end
 
     def default_rubies
-      %w(1.8.7 1.9.2 jruby rbx)
+      %w(2.7.8 3.2.2)
     end
 
     def verbose?
