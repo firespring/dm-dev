@@ -15,7 +15,7 @@ require 'aws-sdk-ssm'
 
 class ::Project
   def self.command_names
-    %w(sync bundle:install bundle:update bundle:show bundle:force gem:install gem:uninstall spec release implode status list ci)
+    %w(sync bundle:install bundle:update bundle:list bundle:force gem:install gem:uninstall spec release implode status list ci)
   end
 
   def self.command_name(name)
@@ -748,7 +748,7 @@ class ::Project
 
       class Show < Bundle
         def bundle_command
-          'show'
+          'list'
         end
       end
 
@@ -1109,7 +1109,7 @@ module DataMapper
       super
       commands['bundle:install'] = DataMapper::Project::Bundle::Install
       commands['bundle:update'] = DataMapper::Project::Bundle::Update
-      commands['bundle:show'] = DataMapper::Project::Bundle::Show
+      commands['bundle:list'] = DataMapper::Project::Bundle::Show
       commands['spec'] = DataMapper::Project::Spec
     end
 
@@ -1309,9 +1309,9 @@ module DataMapper
           DataMapper::Project.bundle_update(options)
         end
 
-        desc 'show', 'Show the bundle content'
-        def show
-          DataMapper::Project.bundle_show(options)
+        desc 'list', 'List the bundle content'
+        def list
+          DataMapper::Project.bundle_list(options)
         end
 
         desc 'force', 'Force re-bundling by removing all Gemfile.platform and Gemfile.platform.lock files'
