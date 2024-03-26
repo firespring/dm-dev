@@ -55,13 +55,13 @@ Installing the DataMapper thor tasks
 
 The easiest way to install the thor tasks is to simply run the following.
 
-    thor install https://github.com/datamapper/dm-dev/raw/master/tasks.rb
+    thor install https://github.com/firespring/dm-dev/raw/master/tasks.rb
 
 If you don't feel comfortable with executing code loaded from the
 internet, you can also clone the github repo containing the tasks and
 then install them like you would install any thor task.
 
-    git clone git://github.com/datamapper/dm-dev.git
+    git clone git://github.com/firespring/dm-dev.git
     thor install dm-dev/tasks.rb
 
 Either way, after showing you the content of tasks.rb, thor will ask you for a
