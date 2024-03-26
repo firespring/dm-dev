@@ -149,7 +149,7 @@ class ::Project
 
         def load
           gh = GitHub.new
-          dm_repos = gh.client.repositories.select {|r| r.full_name.include?('datamapper') || r.full_name.include?('dm-')}
+          dm_repos = gh.client.repositories.select { |r| r.full_name.include?('datamapper') || r.full_name.include?('dm-') }
           save(dm_repos)
         end
       end
@@ -254,9 +254,9 @@ class ::Project
 
     def authorize_oauth
       puts "\nPlease enter your github credentials"
-      username = request_input("  username: ")
-      password = request_input("  password: ", hidden: true)
-      mfa_token = request_input("  2FA token: ")
+      username = request_input('  username: ')
+      password = request_input('  password: ', hidden: true)
+      mfa_token = request_input('  2FA token: ')
       client = Octokit::Client.new(login: username, password: password)
 
       # See if we have already authorized a token. If we do, we will need to delete it
@@ -284,10 +284,10 @@ class ::Project
     def request_input(message, hidden: false)
       print message
       if hidden
-        answer = STDIN.noecho(&:gets).chomp
+        answer = $stdin.noecho(&:gets).chomp
         puts
       else
-        answer = STDIN.gets.chomp
+        answer = $stdin.gets.chomp
       end
       answer
     end
@@ -311,7 +311,7 @@ class ::Project
       @repos = repos
       @excluded_repos = excluded_repos
       @metadata = Metadata.new(@root, @user)
-      @repositories = selected_repositories.map {|repo| Repository.new(@root, repo) }
+      @repositories = selected_repositories.map { |repo| Repository.new(@root, repo) }
     end
 
     def each
@@ -469,7 +469,7 @@ class ::Project
       if @pretend || @verbose
         puts command
       else
-        puts '[%0*d/%d] %s %s %s%s' % format(repo, action, command, msg)
+        puts format('[%0*d/%d] %s %s %s%s', *format_msg(repo, action, command, msg))
       end
     end
 
@@ -1254,7 +1254,7 @@ module DataMapper
         end
 
         def options
-          if index = ARGV.index('--')
+          if (index = ARGV.index('--'))
             super.merge(command_options: ARGV.slice(index + 1, ARGV.size - 1))
           else
             super
@@ -1314,7 +1314,7 @@ module DataMapper
           DataMapper::Project.bundle_show(options)
         end
 
-        desc 'force', 'Force rebundling by removing all Gemfile.platform and Gemfile.platform.lock files'
+        desc 'force', 'Force re-bundling by removing all Gemfile.platform and Gemfile.platform.lock files'
         def force
           DataMapper::Project.bundle_force(options)
         end

@@ -1,18 +1,7 @@
 #require: rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 3.2
-  Exclude:
-    - 'do_derby/**/*'
-    - 'do_h2/**/*'
-    - 'do_hsqldb/**/*'
-    - 'do_jdbc/**/*'
-    - 'do_jdbc-tools/**/*'
-    - 'do_openedge/**/*'
-    - 'do_oracle/**/*'
-    - 'do_postgres/**/*'
-    - 'do_sqlserver/**/*'
-    - 'jdbc_drivers/**/*'
+  TargetRubyVersion: 2.7
 
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: true
