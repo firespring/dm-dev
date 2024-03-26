@@ -21,20 +21,23 @@ services:
       VERBOSE: true                                     # Print out every shell command before executing it
       BENCHMARK: true                                   # Print the time the command took to execute
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ~/.ssh:/home/${USER}/.ssh
       - ../dotfiles/.history:/var/www/.history:delegated
       - .:/home/$USER/datamapper/dm-dev:delegated
-      - "../dm-types:/home/$USER/datamapper/dm-types:delegated"
-      - "../data_mapper:/home/$USER/datamapper/data_mapper:delegated"
-      - "../dm-aggregates:/home/$USER/datamapper/dm-aggregates:delegated"
-      - "../dm-core:/home/$USER/datamapper/dm-core:delegated"
-      - "../dm-do-adapter:/home/$USER/datamapper/dm-do-adapter:delegated"
-      - "../dm-noisy-failures:/home/$USER/datamapper/dm-noisy-failures:delegated"
-      - "../dm-transactions:/home/$USER/datamapper/dm-transactions:delegated"
-      - "../datamapper-do:/home/$USER/datamapper/datamapper-do:delegated"
-      - "../dm-constraints:/home/$USER/datamapper/dm-constraints:delegated"
-      - "../dm-migrations:/home/$USER/datamapper/dm-migrations:delegated"
-      - "../dm-serializer:/home/$USER/datamapper/dm-serializer:delegated"
+      - ../data_mapper:/home/$USER/datamapper/data_mapper:delegated
+      - ../datamapper-do:/home/$USER/datamapper/datamapper-do:delegated
+      - ../dm-aggregates:/home/$USER/datamapper/dm-aggregates:delegated
+      - ../dm-constraints:/home/$USER/datamapper/dm-constraints:delegated
+      - ../dm-core:/home/$USER/datamapper/dm-core:delegated
+      - ../dm-do-adapter:/home/$USER/datamapper/dm-do-adapter:delegated
+      - ../dm-migrations:/home/$USER/datamapper/dm-migrations:delegated
+      - ../dm-mysql-adapter:/home/$USER/datamapper/dm-mysql-adapter:delegated
+      - ../dm-noisy-failures:/home/$USER/datamapper/dm-noisy-failures:delegated
+      - ../dm-serializer:/home/$USER/datamapper/dm-serializer:delegated
+      - ../dm-timestamps:/home/$USER/datamapper/dm-timestamps:delegated
+      - ../dm-transactions:/home/$USER/datamapper/dm-transactions:delegated
+      - ../dm-types:/home/$USER/datamapper/dm-types:delegated
+      - ../dm-validations:/home/$USER/datamapper/dm-validations:delegated
     networks:
       default:
         aliases:
