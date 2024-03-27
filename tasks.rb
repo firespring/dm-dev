@@ -228,15 +228,16 @@ class ::Project
     def login
       authorize_credentials_from_aws
 
-    rescue Octokit::Unauthorized => ua
-      puts "Local auth is invalid (#{ua.message}). Re-authorizing with username/password"
+    rescue Octokit::Unauthorized => e
+      puts "Local auth is invalid (#{e.message}). Re-authorizing with username/password"
       authorize_oauth
       retry
     end
 
     def authorize_credentials_from_aws
+      user = ENV.fetch('USER') # This should error if the user variable doesn't exist
       # Try to load our profile from netrc
-      github_oauth_token = Aws::SSM::Client.new.get_parameter(name: "/local/#{ENV['USER']}/github/oauth_token", with_decryption:true)&.parameter&.value
+      github_oauth_token = Aws::SSM::Client.new.get_parameter(name: "/local/#{user}/github/oauth_token", with_decryption: true)&.parameter&.value
       client = Octokit::Client.new(access_token: github_oauth_token)
 
       # This will raise 'Octokit::Unauthorized' if we are not authorized
@@ -267,17 +268,18 @@ class ::Project
       oauth_token = client.create_authorization(scopes: SCOPES, note: AUTHORIZATION_NAME, headers: {'X-GitHub-OTP' => mfa_token})
 
       # Store the new oauth information in AWS
-      personal_key_id = Aws::SSM::Client.new.get_parameter(name: "/local/#{ENV['USER']}/kms/id", with_decryption:true)&.parameter&.value
+      user = ENV.fetch('USER') # This should error if the user variable doesn't exist
+      personal_key_id = Aws::SSM::Client.new.get_parameter(name: "/local/#{user}/kms/id", with_decryption: true)&.parameter&.value
       Aws::SSM::Client.new.put_parameter(
-        name: "/local/#{ENV['USER']}/github/oauth_token",
+        name: "/local/#{user}/github/oauth_token",
         value: oauth_token[:token],
         type: 'SecureString',
         key_id: personal_key_id,
         overwrite: true
       )
 
-    rescue Octokit::Unauthorized => ua
-      puts "Login information was incorrect: #{ua.message}"
+    rescue Octokit::Unauthorized => e
+      puts "Login information was incorrect: #{e.message}"
       retry
     end
 
@@ -477,8 +479,8 @@ class ::Project
       @progress += 1
     end
 
-    def format(repo, action, command, msg)
-      [@padding, @progress, @total, action, repo.name, msg, @verbose ? ": #{command}" : ''].to_s
+    def format_msg(repo, action, command, msg)
+      [@padding, @progress, @total, action, repo.name, msg, @verbose ? ": #{command}" : '']
     end
   end
 
@@ -1070,7 +1072,7 @@ module DataMapper
 
       def run
         while true
-          if job = next_job
+          if (job = next_job)
             job.run
             @previous_jobs << job.id
           elsif @stop_when_done
