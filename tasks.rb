@@ -214,7 +214,6 @@ class ::Project
   end
 
   class GitHub
-    SBF_REPO = 'firespring/sbf'.freeze
     NETRC_NAME = 'api.github.com'.freeze
     AUTHORIZATION_NAME = 'Dev server token'.freeze
     SCOPES = ['repo'].freeze
@@ -888,7 +887,9 @@ class ::Project
     class Gem < Rvm
       class Install < Gem
         def command
-          "#{super} gem build #{gemspec_file}; #{super} gem install #{gem} --no-ri --no-rdoc"
+          # rvm gem ... commands are no longer valid. Restructure the install command to accomplish the same thing.
+          # @TODO: we may have to revisit 'super' from this context for other commands
+          rubies.map { |ruby| "rvm use #{ruby}; gem build #{gemspec_file}; gem install #{gem} --no-ri --no-rdoc;" }.to_s
         end
 
         def action
@@ -926,7 +927,7 @@ class ::Project
       end
 
       def version
-        ::Gem::Specification.load(working_dir.join(gemspec_file)).version.to_s
+        ::Gem::Specification.load(gemspec_file).version
       end
     end
 
