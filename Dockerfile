@@ -52,13 +52,14 @@ COPY . .
 # Setup dm environment for ruby 2.7
 RUN rvm install 2.7.8
 RUN rvm use 2.7.8 && BUNDLE_GEMFILE=Gemfile.2.7.8 bundle install \
-    && bundle config set --local without 'quality'
+    && bundle config set --local without 'quality' \
+    && gem install rake-compiler
 
 # Setup dm environment for ruby 3.2
 RUN rvm install 3.2.2
 RUN rvm use 3.2.2 --default && BUNDLE_GEMFILE=Gemfile.3.2.2 bundle install \
-    && bundle config set --local without 'quality'
-RUN gem install rake-compiler
+    && bundle config set --local without 'quality' \
+    && gem install rake-compiler
 
 WORKDIR /home/${USERNAME}/datamapper
 
