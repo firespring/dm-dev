@@ -927,6 +927,8 @@ class ::Project
       end
 
       def version
+        return unless File.exist? gemspec_file
+
         ::Gem::Specification.load(gemspec_file).version
       end
     end
