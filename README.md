@@ -73,7 +73,7 @@ your screen.
     thor dm:bundle:update   # Update the bundled DM repositories
     thor dm:gem:install     # Install all included gems into the specified rubies
     thor dm:gem:uninstall   # Uninstall all included gems from the specified rubies
-    thor dm:implode         # Delete all DM gems
+    thor dm:implode         # Delete all DM gems (This REALLY MEANS it, including your repositories on local. You WILL LOSE any unpushed work)
     thor dm:meta:list       # List locally known DM repositories
     thor dm:release         # Release all DM gems to rubygems
     thor dm:spec            # Run specs for DM gems
