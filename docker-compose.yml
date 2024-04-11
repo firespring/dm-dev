@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
     env_file: .env
     environment:
+      DM_DEV_ROOT: "/home/${USER}/datamapper" # Points to where the DM sources will be installed and used
       DO_MYSQL_USER: test
       DO_MYSQL_PASS: test123
       DO_MYSQL_HOST: mysql

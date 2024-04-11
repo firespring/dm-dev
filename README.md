@@ -28,15 +28,19 @@ Docker ...
 mkdir -p ~/datamapper && cd ~/datamapper
 git clone git@github.com:firespring/dm-dev.git
 cd dm-dev
+```
 
-# DO THIS First -> Configure variables in dm-dev/.env file
+Configure variables in dm-dev/.env file
+* GIT_BRANCH="branchname"
+* GITHUB_USER="username"
+
+```bash
 ./setup.rb --clone # clones all the configured DM repositories into your workspace on your local machine
 
 docker-compose build
 docker-compose up
 docker exec -ti dm-dev-app-1 /bin/bash --login
 ```
-
 
 Installing the DataMapper thor tasks
 ------------------------------------
