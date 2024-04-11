@@ -24,16 +24,16 @@ Prerequisites
 Docker ...
 
 ```bash
-# Clone this repository into `~/datamapper/`
+# Clone this repository into your workspace
 mkdir -p ~/datamapper && cd ~/datamapper
 git clone git@github.com:firespring/dm-dev.git
 cd dm-dev
 
 # DO THIS First -> Configure variables in dm-dev/.env file
-./setup.rb --clone # clones all the configured DM repositories into ~/datamapper on your local machine
+./setup.rb --clone # clones all the configured DM repositories into your workspace on your local machine
 
 docker-compose build
-docker-compose up # 
+docker-compose up
 docker exec -ti dm-dev-app-1 /bin/bash --login
 ```
 

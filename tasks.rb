@@ -395,7 +395,7 @@ class ::Project
     def initialize(name, options)
       @name            = name
       @options         = options
-      @root            = Pathname(@options[:root] || ENV['DM_DEV_ROOT'] || Dir.pwd)
+      @root            = Pathname(@options[:root] || ENV['DM_DEV_ROOT'] || Dir.pwd).expand_path
       @bundle_root     = Pathname(@options[:bundle_root] || ENV['DM_DEV_BUNDLE_ROOT'] || @root.join(default_bundle_root))
       @rubies          = @options[:rubies] || (ENV['DM_DEV_RUBIES'] ? normalize(ENV['DM_DEV_RUBIES']) : default_rubies)
       @included        = @options[:include] || (ENV['DM_DEV_INCLUDE']  ? normalize(ENV['DM_DEV_INCLUDE']) : default_included)
@@ -705,7 +705,7 @@ class ::Project
       end
 
       def command
-        "rvm #{rubies.join(',')}"
+        "rvm #{rubies.join(',')} #{verbose? ? '--verbose' : ''}"
       end
 
       class Exec < Rvm
@@ -887,9 +887,7 @@ class ::Project
     class Gem < Rvm
       class Install < Gem
         def command
-          # rvm gem ... commands are no longer valid. Restructure the install command to accomplish the same thing.
-          # @TODO: we may have to revisit 'super' from this context for other commands
-          rubies.map { |ruby| "rvm use #{ruby}; gem build #{gemspec_file}; gem install #{gem} --no-ri --no-rdoc;" }.to_s
+          "#{super} do gem build #{gemspec_file}; #{super} do gem install #{gem} --no-document"
         end
 
         def action
@@ -899,7 +897,7 @@ class ::Project
 
       class Uninstall < Gem
         def command
-          "#{super} gem uninstall #{repo.name} --version #{version}"
+          "#{super} do gem uninstall #{repo.name} --version #{version}"
         end
 
         def action

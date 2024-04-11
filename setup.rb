@@ -3,6 +3,7 @@
 require 'dotenv'
 require 'git'
 require 'optimist'
+require 'pathname'
 
 module DatamapperProject
   class Config
@@ -13,7 +14,7 @@ module DatamapperProject
       Dotenv.load(config)
       @branch_name = ENV.fetch('GIT_BRANCH', 'master')
       @include_repos = ENV.fetch('DM_DEV_INCLUDE', '').split
-      @dev_root = File.expand_path('sbf/datamapper/', '~')
+      @dev_root = File.expand_path('..', __dir__.to_s)
       @github_base_uri = 'github.com:firespring/'
     end
   end
@@ -23,7 +24,7 @@ module DatamapperProject
 
     def initialize(config_obj)
       @config = config_obj
-      @included_repos_actions = Proc.new do |repo, &blk|
+      @included_repos_actions = proc do |repo, &blk|
         dest_path = File.expand_path(repo, config.dev_root)
         is_repo = git_repo? dest_path
 
@@ -56,8 +57,9 @@ module DatamapperProject
           @included_repos_actions.call(repo) do |config, github_repo, dest_path, is_repo|
             next if is_repo
 
+            uri = Pathname("git@#{github_repo}")
             puts "GIT CLONE: git@#{github_repo} at Branch: #{config.branch_name} into #{dest_path}"
-            ::Git.clone("git@#{github_repo}", dest_path, branch: config.branch_name)
+            ::Git.clone(uri, dest_path, branch: config.branch_name)
           end
         end
       end
@@ -65,14 +67,15 @@ module DatamapperProject
 
     def git_repo?(path)
       return false unless Dir.exist?(path)
+      return false if Dir.empty?(path)
 
       `$(cd #{path}; git rev-parse --is-inside-work-tree 2>/dev/null)`
     end
   end
 end
 
-def main _args
-  opts = Optimist::options do
+def main(_args)
+  opts = Optimist.options do
     opt :clone, 'Clone all datamapper included repos into DM_DEV_ROOT'
     opt :checkout, 'Checkout specified branch for all included repos', type: String, default: 'master'
   end
