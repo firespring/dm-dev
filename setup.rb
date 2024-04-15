@@ -36,15 +36,21 @@ module DatamapperProject
       end
     end
 
-    def checkout(branch_name)
+    def checkout(branch_name, create: false)
       Dir.chdir(config.dev_root) do
         config.include_repos.each do |repo|
           @included_repos_actions.call(repo) do |_config, _github_repo, dest_path, is_repo|
             next unless is_repo
 
             Dir.chdir(dest_path) do
-              puts "Checkout branch: #{branch_name}"
-              `git checkout #{branch_name}`
+              if create
+                # @todo this probably needs some error handling or checking to see if the branch already exists
+                puts "Create and Checkout branch: #{branch_name}"
+                `git checkout -b #{branch_name}; git push -u origin`
+              else
+                puts "Checkout branch: #{branch_name}"
+                `git checkout #{branch_name}`
+              end
             end
           end
         end
@@ -78,16 +84,21 @@ def main(_args)
   opts = Optimist.options do
     opt :clone, 'Clone all datamapper included repos into DM_DEV_ROOT'
     opt :checkout, 'Checkout specified branch for all included repos', type: String, default: 'master'
+    opt :create, "Create the checked out branch if it doesn't exist"
   end
 
   config = DatamapperProject::Config.new
   git_commands = DatamapperProject::Git.new(config)
 
-  case opts
-  in clone: true
-    git_commands.clone_included_repos
-  in checkout_given: true
-    git_commands.checkout(opts[:checkout])
+  if opts[:checkout_given] && opts[:create]
+    git_commands.checkout(opts[:checkout], create: true)
+  else
+    case opts
+    in clone: true
+      git_commands.clone_included_repos
+    in checkout_given: true
+      git_commands.checkout(opts[:checkout])
+    end
   end
 end
 
