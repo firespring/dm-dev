@@ -12,56 +12,48 @@ provided tasks also make sure that you're always running the specs
 against your local DataMapper source codes. This is very important once
 you're working on a patch that affects multiple DataMapper gems.
 
-Once you've verified your patch locally, submitted it, and had it accepted,
+~~Once you've verified your patch locally, submitted it, and had it accepted,
 be sure to check the status of the [DataMapper CI server](http://ci.datamapper.org).
 Check both the project that your patch is for, and all downstream projects.
 (The console output from the spec run can be viewed by clicking the green/red
 status icons on the build detail page, then clicking the 'Console Output' link
-in the left-hand sidebar nav).
+in the left-hand sidebar nav).~~
 
 Prerequisites
 -------------
+Docker ...
 
-You need to have [rvm](http://rvm.beginrescueend.com/), [bundler](https://github.com/carlhuda/bundler), [thor](https://github.com/wycats/thor), [ruby-github](https://rubygems.org/gems/ruby-github), [addressable](http://addressable.rubyforge.org/), [rest-client](http://rubygems.org/gems/rest-client) and [jeweler](https://github.com/technicalpickles/jeweler) available on your machine.
+```bash
+# Clone this repository into your workspace
+mkdir -p ~/datamapper && cd ~/datamapper
+git clone git@github.com:firespring/dm-dev.git
+cd dm-dev
+```
 
-### Installing rvm
+Configure variables in dm-dev/.env file
+* GIT_BRANCH="branchname"
+* GITHUB_USER="username"
 
-The awesome rvm comes as a gem and makes installing and using different
-rubies a breeze. Be aware that the following commands may take quite
-some time, depending on your machine.
+```bash
+./setup.rb --clone # clones all the configured DM repositories into your workspace on your local machine
 
-    gem install rvm   # Please follow the instructions
-    rvm install 1.8.7 # You should run specs on 1.8.7
-    rvm install 1.9.2 # You should run specs on 1.9.2
-    rvm install jruby # Bonus points for running on jruby
-    rvm install rbx   # Bonus points for running on rbx
-
-Reading through rvm's detailed [documentation](http://rvm.beginrescueend.com/)
-is definitely time well spent too.
-
-### Installing the required gems
-
-Actually, it's enough to have the following gems installed in the rvm
-ruby you use to run the dm-dev tasks. However, if you sometimes switch
-rubies you might want to have the dm-dev tasks handy for all of them.
-
-    rvm 1.8.7,1.9.2,jruby,rbx gem install jeweler bundler thor addressable ruby-github json rest-client
-
-Once those are installed, you have all you need for the DataMapper thor tasks
-to work.
+docker-compose build
+docker-compose up
+docker exec -ti dm-dev-app-1 /bin/bash --login
+```
 
 Installing the DataMapper thor tasks
 ------------------------------------
 
-The easiest way to install the thor tasks is to simply run the following.
+    # DO THIS First -> login to AWS cli in the docker container (Use your Firespring AWS cli snippet to access stored params for github, etc)
+~~The easiest way to install the thor tasks is to simply run the following.~~
 
-    thor install https://github.com/datamapper/dm-dev/raw/master/tasks.rb
+~~thor install https://github.com/firespring/dm-dev/raw/master/tasks.rb~~
 
-If you don't feel comfortable with executing code loaded from the
+~~If you don't feel comfortable with executing code loaded from the
 internet, you can also clone the github repo containing the tasks and
-then install them like you would install any thor task.
+then install them like you would install any thor task.~~
 
-    git clone git://github.com/datamapper/dm-dev.git
     thor install dm-dev/tasks.rb
 
 Either way, after showing you the content of tasks.rb, thor will ask you for a
@@ -85,7 +77,7 @@ your screen.
     thor dm:bundle:update   # Update the bundled DM repositories
     thor dm:gem:install     # Install all included gems into the specified rubies
     thor dm:gem:uninstall   # Uninstall all included gems from the specified rubies
-    thor dm:implode         # Delete all DM gems
+    thor dm:implode         # Delete all DM gems (This REALLY MEANS it, including your repositories on local. You WILL LOSE any unpushed work)
     thor dm:meta:list       # List locally known DM repositories
     thor dm:release         # Release all DM gems to rubygems
     thor dm:spec            # Run specs for DM gems
@@ -97,17 +89,29 @@ commands (among any other thor tasks you might have installed already).
 
 ## dm-dev
 
-The following describes the new DM development tasks and shows how you can use them. These tasks greatly simplify the management of DM related source code and hopefully also help interested contributors to get a fully functional DM development up and running fast. By invoking very few commands, contributors can verify if their patch(es) meet the DM quality guidelines, aka, do specs pass on all supported platforms?
+The following describes the new DM development tasks and shows how you can use them. These tasks greatly simplify the management of DM related source
+code and hopefully also help interested contributors to get a fully functional DM development up and running fast. By invoking very few commands,
+contributors can verify if their patch(es) meet the DM quality guidelines, aka, do specs pass on all supported platforms?
 
 ## Totally isolated
 
-The following tasks don't affect the system gems *at all*. Nor do they mess with any rvm ruby specific (system)gem(set). By default, *everything* will be bundled below `"#{Dir.pwd}/DM_DEV_BUNDLE_ROOT"`, you can alter the install location by passing the `DM_DEV_BUNDLE_ROOT=/path/to/bundle/root` ENV var. `DM_DEV_BUNDLE_ROOT` contains separate folders for every ruby in use.
+The following tasks don't affect the system gems *at all*. Nor do they mess with any rvm ruby specific (system)gem(set). By default, *everything* will
+be bundled below `"#{Dir.pwd}/DM_DEV_BUNDLE_ROOT"`, you can alter the install location by passing the `DM_DEV_BUNDLE_ROOT=/path/to/bundle/root` ENV
+var. `DM_DEV_BUNDLE_ROOT` contains separate folders for every ruby in use.
 
-This means that once all dependencies are bundled for any given ruby, there's no need to clean anything between spec runs. Also, no re-bundling needs to happen before spec runs since everything is already bundled. Of course, the bundles can (and should) be updated manually from time to time, to ensure that the dependencies for the code under test are up to date.
+This means that once all dependencies are bundled for any given ruby, there's no need to clean anything between spec runs. Also, no re-bundling needs
+to happen before spec runs since everything is already bundled. Of course, the bundles can (and should) be updated manually from time to time, to
+ensure that the dependencies for the code under test are up to date.
 
-The tasks make sure that you're always testing against local sources. This is very important if you're developing patches that touch multiple DM repositories. Testing against local sources only, will make sure that the code still works with all your modifications to potentially more than one DM repository.
+The tasks make sure that you're always testing against local sources. This is very important if you're developing patches that touch multiple DM
+repositories. Testing against local sources only, will make sure that the code still works with all your modifications to potentially more than one DM
+repository.
 
-To achieve this, the bundle task copies the Gemfile to `Gemfile.ruby_version` where *ruby_version* is any of the specified rubies to use. This is done because bundler automatically creates a `Gemfile.lock` after `bundle install`. In our case that leaves us with files like `Gemfile.1.9.2` and `Gemfile.1.9.2.lock`. That's necessary, because otherwise bundler confuses the the `BUNDLE_PATH` to use. Every command executed by the bundle tasks explicitly passes `BUNDLE_PATH=/path/to/DM_DEV_BUNDLE_ROOT/ruby_version` and `BUNDLE_GEMFILE=/path/to/Gemfile.ruby_version` as environment variables, to make sure that the right bundle is used.
+To achieve this, the bundle task copies the Gemfile to `Gemfile.ruby_version` where *ruby_version* is any of the specified rubies to use. This is done
+because bundler automatically creates a `Gemfile.lock` after `bundle install`. In our case that leaves us with files like `Gemfile.1.9.2` and
+`Gemfile.1.9.2.lock`. That's necessary, because otherwise bundler confuses the the `BUNDLE_PATH` to use. Every command executed by the bundle tasks
+explicitly passes `BUNDLE_PATH=/path/to/DM_DEV_BUNDLE_ROOT/ruby_version` and `BUNDLE_GEMFILE=/path/to/Gemfile.ruby_version` as environment variables,
+to make sure that the right bundle is used.
 
 ## Remove all traces easily
 
@@ -116,7 +120,8 @@ folder, it's easy to get rid of it any time. Apart from obviously just
 deleting the folder, you can use `thor dm:implode` just for the fun of
 it.
 
-When the `DM_DEV_INCLUDE` environment variable *is not specified*, all repositories will be deleted as well as the `DM_DEV_BUNDLE_ROOT`, meaning that you will have to re-bundle everything next time. (Be aware that this might take a long time!)
+When the `DM_DEV_INCLUDE` environment variable *is not specified*, all repositories will be deleted as well as the `DM_DEV_BUNDLE_ROOT`, meaning that
+you will have to re-bundle everything next time. (Be aware that this might take a long time!)
 
 When the `DM_DEV_INCLUDE` environment variable *is specified*, only the
 specified repositories will be deleted. The `DM_DEV_BUNDLE_ROOT` stays
@@ -124,7 +129,9 @@ untouched.
 
 ## Running specs
 
-The spec task runs specs for all specified gems against all specified rubies and adapters. While running, it prints out a matrix, that shows for every ruby and every adapter if the specs `pass` or `fail`. The spec task makes sure that only local DM sources are used so you can safely assume that you're running the specs against your latest modifications.
+The spec task runs specs for all specified gems against all specified rubies and adapters. While running, it prints out a matrix, that shows for every
+ruby and every adapter if the specs `pass` or `fail`. The spec task makes sure that only local DM sources are used so you can safely assume that
+you're running the specs against your latest modifications.
 
 Note that for the specs to reliably work, you should `thor dm:sync`
 *all* DM repositories once. This is necessary because some gems might
