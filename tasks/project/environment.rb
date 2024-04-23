@@ -2,11 +2,12 @@ require 'pathname'
 
 class ::Project
   class Environment
-    attr_reader :name, :options, :root, :included, :excluded, :rubies, :bundle_root, :gemset, :command_options
+    attr_reader :project_name, :github_user, :options, :root, :included, :excluded, :rubies, :bundle_root, :gemset, :command_options
 
     # rubocop:disable Metrics/CyclomaticComplexity
-    def initialize(name, options)
-      @name            = name
+    def initialize(project_name, options)
+      @project_name = project_name
+      @github_user = ENV.fetch('GITHUB_USER', 'datamapper')
       @options         = options
       @root            = Pathname(@options[:root] || ENV['DM_DEV_ROOT'] || Dir.pwd).expand_path
       @bundle_root     = Pathname(@options[:bundle_root] || ENV['DM_DEV_BUNDLE_ROOT'] || @root.join(default_bundle_root))

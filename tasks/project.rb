@@ -63,9 +63,9 @@ class ::Project
 
   def initialize(options = {})
     @options  = options
-    @env      = environment_class.new(name, @options)
+    @env      = environment_class.new('datamapper', @options)
     @root     = @env.root
-    @repos    = Repositories.new(@root, name, @env.included, @env.excluded + excluded_repos)
+    @repos    = Repositories.new(@root, @env.github_user, @env.included, @env.excluded + excluded_repos)
     @logger   = Logger.new(@env, @repos.count)
     @commands = {}
     @results  = {}

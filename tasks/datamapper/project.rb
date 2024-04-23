@@ -16,9 +16,6 @@ module DataMapper
       commands['spec'] = DataMapper::Project::Spec
     end
 
-    def name
-      ENV.fetch('GITHUB_USER', 'datamapper')
-    end
 
     def environment_class
       DataMapper::Project::Environment

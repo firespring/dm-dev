@@ -6,7 +6,7 @@ module DataMapper
     class Environment < ::Project::Environment
       attr_reader :available_adapters
 
-      def initialize(name, options)
+      def initialize(project_name, options)
         super
         @available_adapters ||= ENV['DM_DEV_ADAPTERS'] ? normalize(ENV['DM_DEV_ADAPTERS']) : default_available_adapters
         @adapters ||= options[:adapters] || (ENV['ADAPTERS'] ? normalize(ENV['ADAPTERS']) : default_adapters)
