@@ -4,4 +4,4 @@ require 'io/console'
 
 require_relative 'datamapper/project'
 
-DATAMAPPER_PROJECT = DataMapper::Project
+DM = DataMapper::Project
