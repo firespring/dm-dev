@@ -25,6 +25,7 @@ class ::Project
   end
 
   command_names.each do |name|
+    # @TODO: puts "Repo: ... Name: ... line below is for debugging. remove it when done"
     class_eval <<-RUBY, __FILE__, __LINE__ + 1
       def self.#{command_name(name)}(options = {})
         new(options).send(:#{command_name(name)})
@@ -36,6 +37,7 @@ class ::Project
 
         self.class.invoke :before, '#{command_name(name)}', env, repos
         @repos.each do |repo|
+          puts "Repo: #\{repo.name}, Name: #{name}"
           @logger.progress!
           results[repo.name] = command_class('#{name}').new(repo, env, @logger).run
         end
