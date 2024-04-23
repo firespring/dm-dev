@@ -12,8 +12,8 @@ class ::Project
       @root            = Pathname(@options[:root] || ENV['DM_DEV_ROOT'] || Dir.pwd).expand_path
       @bundle_root     = Pathname(@options[:bundle_root] || ENV['DM_DEV_BUNDLE_ROOT'] || @root.join(default_bundle_root))
       @rubies          = @options[:rubies] || (ENV['DM_DEV_RUBIES'] ? normalize(ENV['DM_DEV_RUBIES']) : default_rubies)
-      @included        = @options[:include] || (ENV['DM_DEV_INCLUDE']  ? normalize(ENV['DM_DEV_INCLUDE']) : default_included)
-      @excluded        = @options[:exclude] || (ENV['DM_DEV_EXCLUDE']  ? normalize(ENV['DM_DEV_EXCLUDE']) : default_excluded)
+      @included        = @options[:include] || (ENV['DM_DEV_INCLUDE'] ? normalize(ENV['DM_DEV_INCLUDE']) : default_included)
+      @excluded        = @options[:exclude] || (ENV['DM_DEV_EXCLUDE'] ? normalize(ENV['DM_DEV_EXCLUDE']) : default_excluded)
       @gemset          = @options[:gemset] ||  ENV.fetch('DM_DEV_GEMSET', nil)
       @verbose         = @options[:verbose] || (ENV['VERBOSE'] == 'true')
       @silent          = @options[:silent] || (ENV['SILENT'] == 'true')
