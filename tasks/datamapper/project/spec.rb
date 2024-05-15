@@ -7,7 +7,6 @@ module DataMapper
       include DataMapper::Project::Bundle
 
       def before
-        puts "BUNDLED?: '#{bundled?}'"
         # @TODO: silent is false for debugging. Set it back to true when done
         DataMapper::Project.bundle_install(env.options.merge(silent: false)) unless bundled?
       end

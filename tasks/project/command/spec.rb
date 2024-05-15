@@ -22,9 +22,8 @@ class ::Project
       end
 
       def bundle_command
-        # @TODO: '; pwd; gem info | grep rspec' is here for debugging an issue. Remove it when finished
         if env.command_options
-          "exec spec #{env.command_options.join(' ')}; pwd; gem info | grep rspec"
+          "exec spec #{env.command_options.join(' ')}"
         else
           'exec rake spec; pwd; gem info | grep rspec'
         end
