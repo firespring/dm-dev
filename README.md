@@ -54,7 +54,7 @@ Installing the DataMapper thor tasks
 internet, you can also clone the github repo containing the tasks and
 then install them like you would install any thor task.~~
 
-    thor install dm-dev/tasks.rb
+    thor install dm-dev/tasks
 
 Either way, after showing you the content of tasks.rb, thor will ask you for a
 name for those new tasks.
@@ -73,7 +73,7 @@ your screen.
     --
     thor dm:bundle:force    # Force rebundling by removing all Gemfile.platform and Gemfile.platform.lock files
     thor dm:bundle:install  # Bundle the DM repositories
-    thor dm:bundle:show     # Show the bundle content
+    thor dm:bundle:list     # Show the bundle content
     thor dm:bundle:update   # Update the bundled DM repositories
     thor dm:gem:install     # Install all included gems into the specified rubies
     thor dm:gem:uninstall   # Uninstall all included gems from the specified rubies
@@ -158,7 +158,7 @@ You can override user and password by setting the following ENV vars:
 
     thor dm:bundle:force    # Force rebundling by removing all Gemfile.platform and Gemfile.platform.lock files
     thor dm:bundle:install  # Bundle the DM repositories
-    thor dm:bundle:show     # Show the bundle content
+    thor dm:bundle:list     # Show the bundle content
     thor dm:bundle:update   # Update the bundled DM repositories
     thor dm:gem:install     # Install all included gems into the specified rubies
     thor dm:gem:uninstall   # Uninstall all included gems from the specified rubies
@@ -315,7 +315,7 @@ Obviously your results may differ.
     ree-1.8.7-2010.02 mungo:dm-dev snusnu$ thor help dm
     Tasks:
       /path/to/thor dm:bundle:install  # Bundle the DM repositories
-      /path/to/thor dm:bundle:show     # Show the bundle content
+      /path/to/thor dm:bundle:list     # Show the bundle content
       /path/to/thor dm:bundle:update   # Update the bundled DM repositories
       /path/to/thor dm:implode         # Delete all DM gems
       /path/to/thor dm:meta:list       # List locally known DM repositories
@@ -410,7 +410,7 @@ Example:
     thor dm:list           # same as passing: -i dm-validations
     thor dm:bundle:install # same as passing: -i dm-validations
     thor dm:bundle:update  # same as passing: -i dm-validations
-    thor dm:bundle:show    # same as passing: -i dm-validations
+    thor dm:bundle:list    # same as passing: -i dm-validations
     thor dm:spec           # same as passing: -i dm-validations
     thor dm:implode        # same as passing: -i dm-validations
 
@@ -435,7 +435,7 @@ still pass any other additional options to the commands.
     DM.list
     DM.bundle_install
     DM.bundle_update
-    DM.bundle_show
+    DM.bundle_list
     DM.spec
     DM.implode
 

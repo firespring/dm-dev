@@ -7,7 +7,7 @@ services:
       args:
         USERNAME: ${USER}
         DM_DEV_EXCLUDE: "dm-dev dm-tags dm-ar-finders" # Makes sure that these gems are not used
-        DM_DEV_INCLUDE: "data_mapper datamapper-do dm-aggregates dm-constraints dm-core dm-do-adapter dm-migrations dm-mysql-adapter dm-noisy-failures dm-serializer dm-timestamps dm-transactions dm-types dm-validations"
+        DM_DEV_INCLUDE: "dm-core data_mapper dm-aggregates dm-constraints dm-do-adapter dm-migrations dm-mysql-adapter dm-noisy-failures dm-serializer dm-timestamps dm-transactions dm-types dm-validations"
       context: .
       dockerfile: Dockerfile
     env_file: .env
