@@ -13,10 +13,10 @@ services:
     env_file: .env
     environment:
       DM_DEV_ROOT: "/home/${USER}/datamapper" # Points to where the DM sources will be installed and used
-      DO_MYSQL_USER: test
-      DO_MYSQL_PASS: test123
+      DO_MYSQL_USER: datamapper
+      DO_MYSQL_PASS: datamapper
       DO_MYSQL_HOST: mysql
-      DO_MYSQL_DATABASE: /test
+      DM_DB_HOST: mysql
       USER: ${USER}
     volumes:
       - ~/.ssh:/home/${USER}/.ssh
@@ -43,13 +43,11 @@ services:
   mysql:
     image: mysql:8.0
     volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
     environment:
       HISTFILE: var/www/.history/bash
       MYSQL_RANDOM_ROOT_PASSWORD: 1
-      MYSQL_DATABASE: test
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test123
 
 volumes:
   mysql-data:
