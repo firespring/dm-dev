@@ -25,7 +25,7 @@ class ::Project
         if env.command_options
           "exec spec #{env.command_options.join(' ')}"
         else
-          'exec rake spec; pwd; gem info | grep rspec'
+          'exec rake spec'
         end
       end
 
