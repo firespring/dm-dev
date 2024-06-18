@@ -40,7 +40,7 @@ services:
         aliases:
           - dm.sbf.engineering
   mysql:
-    image: mysql:8.0
+    image: mysql:5.7
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
       - mysql-data:/var/lib/mysql
