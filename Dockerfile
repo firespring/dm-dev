@@ -1,4 +1,4 @@
-FROM ruby:2.7.8-slim-bullseye
+FROM ruby:3.2.2-slim-bullseye
 MAINTAINER Firespring "info.dev@firespring.com"
 ARG USERNAME
 ARG DM_DEV_INCLUDE
@@ -8,7 +8,7 @@ WORKDIR /usr/src
 ARG TARGETARCH=amd64
 
 RUN apt-get update \
-    && DEPLIBS='zip unzip build-essential curl default-libmysqlclient-dev vim gpg gawk autoconf automake bison libgdbm-dev libncurses5-dev libsqlite3-dev libtool pkg-config sqlite3 libreadline-dev libssl-dev iputils-ping libxml2-dev jq git' \
+    && DEPLIBS='zip unzip build-essential curl vim gpg gawk autoconf automake bison libgdbm-dev libncurses5-dev libsqlite3-dev libtool pkg-config sqlite3 libreadline-dev libssl-dev iputils-ping libxml2-dev jq git default-mysql-client default-libmysqlclient-dev' \
     && apt-get install -y $DEPLIBS && mkdir -p /tmp/awscli/ && cd /tmp/awscli/ \
     && if [ -z "${TARGETARCH##*arm*}" ] ; then \
          curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"; \
