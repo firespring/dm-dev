@@ -6,7 +6,7 @@ services:
       args:
         USERNAME: ${USER}
         DM_DEV_EXCLUDE: "dm-dev dm-tags dm-ar-finders" # Makes sure that these gems are not used
-        DM_DEV_INCLUDE: "dm-core data_mapper dm-aggregates dm-constraints dm-do-adapter dm-migrations dm-mysql-adapter dm-noisy-failures dm-serializer dm-timestamps dm-transactions dm-types dm-validations"
+        DM_DEV_INCLUDE: "dm-core data_mapper dm-aggregates dm-constraints dm-do-adapter dm-migrations dm-mysql-adapter dm-noisy-failures dm-serializer dm-sqlite-adapter dm-timestamps dm-transactions dm-types dm-validations"
       context: .
       dockerfile: Dockerfile
     env_file: .env
@@ -31,6 +31,7 @@ services:
       - ../dm-mysql-adapter:/home/$USER/datamapper/dm-mysql-adapter:delegated
       - ../dm-noisy-failures:/home/$USER/datamapper/dm-noisy-failures:delegated
       - ../dm-serializer:/home/$USER/datamapper/dm-serializer:delegated
+      - ../dm-sqlite-adapter:/home/$USER/datamapper/dm-sqlite-adapter:delegated
       - ../dm-timestamps:/home/$USER/datamapper/dm-timestamps:delegated
       - ../dm-transactions:/home/$USER/datamapper/dm-transactions:delegated
       - ../dm-types:/home/$USER/datamapper/dm-types:delegated
