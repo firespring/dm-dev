@@ -28,18 +28,34 @@ Docker ...
 mkdir -p ~/datamapper && cd ~/datamapper
 git clone git@github.com:firespring/dm-dev.git
 cd dm-dev
+
+# On Docker Desktop for Windows checkout the code
+git checkout [branchname]
 ```
 
 Configure variables in dm-dev/.env file
 * GIT_BRANCH="branchname"
 * GITHUB_USER="username"
+* DO_GIT="true"
+* DM_DEV_INCLUDE="dm-core datamapper-do dm-aggregates dm-constraints dm-do-adapter dm-migrations dm-mysql-adapter dm-noisy-failures dm-serializer dm-timestamps dm-transactions dm-types dm-validations"
 
 ```bash
+BUNDLE_GEMFILE=Gemfile.3.2.2 bundle install
+
+# Make sure the above 3 GIT variables are in your environment
+env | grep GIT
+
+# If they are not you should be able to do the following to get them there
+eval $(cat .env)
+
 ./setup.rb --clone # clones all the configured DM repositories into your workspace on your local machine
 
 docker-compose build
 docker-compose up
 docker exec -ti dm-dev-app-1 /bin/bash --login
+
+# Docker for Windows the docker container name was slightly different
+docker exec -ti dm-dev_app_1 /bin/bash --login
 ```
 
 Installing the DataMapper thor tasks
