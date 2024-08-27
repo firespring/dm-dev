@@ -56,6 +56,7 @@ docker exec -ti dm-dev-app-1 /bin/bash --login
 
 # Docker for Windows the docker container name was slightly different
 docker exec -ti dm-dev_app_1 /bin/bash --login
+./setup.rb --checkout [branchname]
 ```
 
 Installing the DataMapper thor tasks
