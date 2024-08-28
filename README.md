@@ -12,12 +12,12 @@ provided tasks also make sure that you're always running the specs
 against your local DataMapper source codes. This is very important once
 you're working on a patch that affects multiple DataMapper gems.
 
-~~Once you've verified your patch locally, submitted it, and had it accepted,
+<!-- ~~Once you've verified your patch locally, submitted it, and had it accepted,
 be sure to check the status of the [DataMapper CI server](http://ci.datamapper.org).
 Check both the project that your patch is for, and all downstream projects.
 (The console output from the spec run can be viewed by clicking the green/red
 status icons on the build detail page, then clicking the 'Console Output' link
-in the left-hand sidebar nav).~~
+in the left-hand sidebar nav).~~ -->
 
 Prerequisites
 -------------
@@ -56,22 +56,29 @@ docker exec -ti dm-dev-app-1 /bin/bash --login
 
 # Docker for Windows the docker container name was slightly different
 docker exec -ti dm-dev_app_1 /bin/bash --login
-./setup.rb --checkout [branchname]
 ```
 
 Installing the DataMapper thor tasks
 ------------------------------------
 
-    # DO THIS First -> login to AWS cli in the docker container (Use your Firespring AWS cli snippet to access stored params for github, etc)
-~~The easiest way to install the thor tasks is to simply run the following.~~
+DO THIS First after logging into your docker container 
+  -> login to AWS cli in the docker container (Use your Firespring AWS cli snippet to access stored params for github, etc)
+
+```bash
+# Do this within the Docker container after logging in
+./setup.rb --checkout [branchname]
+
+# Installs thor tasks
+thor install dm-dev/tasks
+```
+
+<!-- ~~The easiest way to install the thor tasks is to simply run the following.~~
 
 ~~thor install https://github.com/firespring/dm-dev/raw/master/tasks.rb~~
 
 ~~If you don't feel comfortable with executing code loaded from the
 internet, you can also clone the github repo containing the tasks and
-then install them like you would install any thor task.~~
-
-    thor install dm-dev/tasks
+then install them like you would install any thor task.~~ -->
 
 Either way, after showing you the content of tasks.rb, thor will ask you for a
 name for those new tasks.
