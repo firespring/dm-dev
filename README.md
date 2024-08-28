@@ -62,7 +62,7 @@ Installing the DataMapper thor tasks
 ------------------------------------
 
 DO THIS First after logging into your docker container 
-  -> login to AWS cli in the docker container (Use your Firespring AWS cli snippet to access stored params for github, etc)
+* Login to AWS cli in the docker container (Use your Firespring AWS cli snippet to access stored params for github, etc)
 
 ```bash
 # Do this within the Docker container after logging in
