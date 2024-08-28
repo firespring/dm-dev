@@ -52,11 +52,20 @@ eval $(cat .env)
 
 docker-compose build
 docker-compose up
+```
+
+Logging into Docker Container
+------------------------------------
+
+Once you do your `docker-compose up` you need to open another command window to actually log into the container (at least Docker Desktop for Windows)
+
+```bash
 docker exec -ti dm-dev-app-1 /bin/bash --login
 
 # Docker for Windows the docker container name was slightly different
 docker exec -ti dm-dev_app_1 /bin/bash --login
 ```
+
 
 Installing the DataMapper thor tasks
 ------------------------------------
