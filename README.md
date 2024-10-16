@@ -520,3 +520,13 @@ command:
 
 Subsequent operations will take the newly added gem into account,
 given that it provides a `Gemfile` and a `rake spec` spec task.
+
+## Version and Publish the gems
+After making changes to a gem update the Version. Most of the Gems have a version file located at `/lib/<gem>/version.rb`. You will also need to check all other
+Gems .gemspec files to verify that dependencies get updated to the correct version. Then to publish run
+1. thor dm:gem:install
+2. thor dm:release
+
+This will publish all the sub gems. Then to publish the main datamapper gem cd into datamapper/data_mapper and run
+1. gem build data_mapper.gemspec
+2. gem push <newly created gem (sbf-data_mapper-1.2.0.gem), the version will be different)>

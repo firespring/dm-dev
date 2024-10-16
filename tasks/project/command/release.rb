@@ -5,10 +5,9 @@ class ::Project
   class Command
     class Release < Command
       def run
-        # TODO: move to its own command
-        clean_repository(project_name)
-
         FileUtils.cd(working_dir) do
+          clean_repository()
+          log(working_dir)
           log(command)
           system(command) unless pretend?
         end
@@ -20,6 +19,10 @@ class ::Project
 
       def action
         'Releasing'
+      end
+
+      def clean_repository()
+        system('git clean -dfx --exclude=*.gem')
       end
     end
   end
