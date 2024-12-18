@@ -31,6 +31,7 @@ services:
       - ../dm-mysql-adapter:/home/$USER/datamapper/dm-mysql-adapter:delegated
       - ../dm-noisy-failures:/home/$USER/datamapper/dm-noisy-failures:delegated
       - ../dm-serializer:/home/$USER/datamapper/dm-serializer:delegated
+      - ../dm-sql-finders:/home/$USER/datamapper/dm-sql-finders:delegated
       - ../dm-sqlite-adapter:/home/$USER/datamapper/dm-sqlite-adapter:delegated
       - ../dm-timestamps:/home/$USER/datamapper/dm-timestamps:delegated
       - ../dm-transactions:/home/$USER/datamapper/dm-transactions:delegated
