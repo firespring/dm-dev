@@ -1,6 +1,7 @@
 ---
 services:
   app:
+    platform: linux/amd64
     image: dm-dev:latest
     build:
       args:

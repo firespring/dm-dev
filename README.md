@@ -554,6 +554,18 @@ command:
 Subsequent operations will take the newly added gem into account,
 given that it provides a `Gemfile` and a `rake spec` spec task.
 
+## DM-Dev workflow
+creating a branch:
+`./setup.rb --checkout story/TP-xyz --create`
+
+finishing a branch (this needs to be done in each of the repos):
+1. git checkout release/F-89266
+2. git merge --squash --no-commit story/TP-xyz
+3. git commit -m 'commit message'
+4. git push
+5. git push origin -d story/TP-xyz
+6. git branch -D story/TP-xyz
+
 ## Version and Publish the gems
 After making changes to a gem update the Version. Most of the Gems have a version file located at `/lib/<gem>/version.rb`. You will also need to check all other
 Gems .gemspec files to verify that dependencies get updated to the correct version. Then to publish run
